@@ -14,6 +14,7 @@ import { Trash } from "lucide-react";
 
 export function ItemList() {
   const { inventory } = useItemStore();
+  const deleteInventoryItem = useItemStore((state) => state.deleteInventoryItem);
 
   return (
     <Card>
@@ -44,31 +45,38 @@ export function ItemList() {
                 </TableCell>
               </TableRow>
             ) : (
-              // replace the following hardcoded row with the dynamic mapping of data items
-              <TableRow>
-                <TableCell>
-                  <Badge variant="outline">Electronics</Badge>
-                </TableCell>
-                <TableCell className="font-medium">Apple Airpod 5</TableCell>
-                <TableCell className="text-right">10</TableCell>
-                <TableCell className="text-right">฿4000.00</TableCell>
-                <TableCell className="text-right font-semibold">
-                  ฿{(10 * 4000).toFixed(2)}
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  2026-10-05
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    className="text-white bg-red-500 hover:bg-red-600 text-white"
-                    variant="ghost"
-                    size="sm"
-                  >
-                    <Trash className="h-4 w-4" />
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
+              inventory.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <Badge variant="outline">{item.category}</Badge>
+                  </TableCell>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  
+                  {/* 1. แสดงจำนวนสินค้าแบบมีคอมมาคั่น */}
+                  <TableCell className="text-right">
+                    {Number(item.quantity).toLocaleString()}
+                  </TableCell>
+                  
+                  {/* 2. แสดงราคาต่อชิ้น มีคอมมา และทศนิยม 2 ตำแหน่ง */}
+                  <TableCell className="text-right">
+                    ฿{Number(item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </TableCell>
+                  
+                  {/* 3. แสดงราคารวม มีคอมมา และทศนิยม 2 ตำแหน่ง */}
+                  <TableCell className="text-right font-semibold">
+                    ฿{(item.quantity * item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </TableCell>
+                  
+                  <TableCell>{item.date}</TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="destructive" className="rounded-full gap-2 hover:bg-red-500 hover:text-white transition-colors"
+                      onClick={() => deleteInventoryItem(item.id)}>
+                      <Trash className="h-4 w-4" />
+                      <span>Delete</span>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>

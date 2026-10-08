@@ -1,5 +1,5 @@
-import { useItemStore } from "@/store/dataStore";
-import { categoryOptions } from "@/types/datatypes";
+import { useItemStore } from '@/store/dataStore';
+import { categoryOptions } from '@/types/datatypes';
 import {
   Laptop,
   Pencil,
@@ -7,8 +7,8 @@ import {
   Shirt,
   Wrench,
   MoreHorizontal,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const iconMap: Record<string, React.ReactNode> = {
   Electronics: <Laptop className="h-4 w-4" />,
@@ -23,7 +23,7 @@ export function CategoryCards() {
   const inventory = useItemStore((state) => state.inventory);
 
   return (
-    <div className="grid gap-2 md:grid-cols-6">
+    <div className="grid gap-4 md:grid-cols-6">
       {categoryOptions.map((category) => {
         const categoryItems = inventory.filter(
           (item) => item.category === category.value,
@@ -38,11 +38,22 @@ export function CategoryCards() {
         );
 
         return (
-          // Use Card component to display values by category
-          <div>
-            {category.label} - ฿{categoryValue.toFixed(2)} - {categoryUnits}{" "}
-            units
-          </div>
+          <Card key={category.value}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {category.label}
+              </CardTitle>
+              {iconMap[category.value]}
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ฿{categoryValue.toFixed(2)}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {categoryUnits} {categoryUnits === 1 ? 'unit' : 'units'}
+              </p>
+            </CardContent>
+          </Card>
         );
       })}
     </div>
